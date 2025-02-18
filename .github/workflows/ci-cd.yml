@@ -22,7 +22,7 @@ jobs:
           
 
       - name: Instalar dependências
-        run: cd minha-app minha-app && npm install
+        run: cd minha-app && npm install
 
       - name: Executar testes
         run: npm test -- --watchAll=false
