@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ✅ Necessário para criar releases
 
     steps:
       - name: Checkout do código
@@ -18,8 +20,6 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-
-          
 
       - name: Instalar dependências
         run: npm install
@@ -44,17 +44,5 @@ jobs:
           draft: false
           prerelease: false
           files: build/**
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Baixar artefato
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/
-
-      - name: Deploy (exemplo)
-        run: echo "Aqui vai o comando de deploy para produção"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
