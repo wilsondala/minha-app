@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p> 
-          Criação de <code>uma pipeline de CI/CD</code> usando o GitHub Actions.
+          Criação de <code>uma pipeline de CI/CD</code> GitHub Actions.
         </p>
         <a
           className="App-link"
