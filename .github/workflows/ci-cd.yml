@@ -1,4 +1,4 @@
-name: CI/CD for React with TypeScript
+name: CI/CD for React
 
 on:
   push:
@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # ✅ Necessário para criar releases
-
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
@@ -19,7 +16,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
 
       - name: Instalar dependências
         run: npm install
@@ -36,13 +32,30 @@ jobs:
           name: build-artifact
           path: build/
 
-      - name: Criar release no GitHub
-        uses: softprops/action-gh-release@v1
+  deploy-test:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testing
+    steps:
+      - name: Baixar artefato
+        uses: actions/download-artifact@v4
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Release v1.0.${{ github.run_number }}
-          draft: false
-          prerelease: false
-          files: build/**
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: build-artifact
+          path: build/
+
+      - name: Deploy para ambiente de teste
+        run: echo "Fazendo deploy no ambiente de teste..."
+
+  deploy-production:
+    needs: deploy-test
+    runs-on: ubuntu-latest
+    environment: production  # 🔹 Garante que precisa de aprovação manual
+    steps:
+      - name: Baixar artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: build/
+
+      - name: Deploy para produção
+        run: echo "Fazendo deploy para produção..."
