@@ -1,0 +1,58 @@
+name: CI/CD for React with TypeScript
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Executar testes
+        run: npm test -- --watchAll=false
+
+      - name: Construir a aplicação
+        run: npm run build
+
+      - name: Armazenar artefato da aplicação
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: build/
+
+      - name: Criar release no GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: build/**
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Baixar artefato
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+          path: build/
+
+      - name: Deploy (exemplo)
+        run: echo "Aqui vai o comando de deploy para produção"
