@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v20
+        uses: actions/setup-node@vv22.14.0
         with:
-          node-version: 20
+          node-version: v22.14.0
 
       - name: Instalar dependências
         run: npm install
