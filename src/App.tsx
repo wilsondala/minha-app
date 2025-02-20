@@ -9,7 +9,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p> 
           Criação de <code>uma pipeline de CI/CD</code> GitHub Actions.
-          deploy concluido
+          deploy concluido obrigado pela oportunidade
         </p>
         <a
           className="App-link"
