@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
@@ -53,6 +52,22 @@ jobs:
         with:
          name: build
          path: build/
-         
+
       - name: Deploy (exemplo)
         run: echo "Aqui vai o comando de deploy para produção"
+
+  notify:
+    if: failure() # Executa apenas se algum job falhar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar e-mail em caso de falha
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "🚨 Falha no CI/CD - Repositório ${{ github.repository }}"
+          to: "dalakahango@hotmail.com"
+          from: "diego.couto@toroinvestimentos.com.br"
+          body: "O pipeline de CI/CD falhou na etapa ${{ github.job }}.\nVerifique os logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
